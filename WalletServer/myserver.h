@@ -28,6 +28,10 @@ private:
     QTcpServer *server;
     QList<QTcpSocket*> connection_list;
 
+private:
+    void add_new_connection(QTcpSocket* socket);
+    void read_data_from_socket();
+
 private slots:
     void newConnection();
 };
