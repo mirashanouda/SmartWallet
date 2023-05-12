@@ -11,7 +11,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(socket, &QTcpSocket::readyRead, this, &MainWindow::readFromSocket);
     connect(socket, &QTcpSocket::disconnected, this, &MainWindow::discardSocket);
     socket->connectToHost(QHostAddress::LocalHost,8080);
-//    socket->connectToHost("127.0.0.1", 8080);
 
     if(!socket->waitForConnected())
 //        ui->statusBar->showMessage("Connected to Server");
@@ -19,15 +18,6 @@ MainWindow::MainWindow(QWidget *parent)
         QMessageBox::critical(this,"QTCPClient", QString("The following error occurred: %1.").arg(socket->errorString()));
         exit(EXIT_FAILURE);
     }
-
-//    socket->connectToHost("127.0.0.1", 8080);
-//    socket->open(QIODevice::ReadWrite);
-//    if (socket->isOpen()){
-//        QMessageBox::information(this, "Client", "Connected to a server");
-//    }
-//    else {
-//        QMessageBox::warning(this, "Client", "Failed to connect");
-//    }
 }
 
 MainWindow::~MainWindow()
@@ -42,7 +32,6 @@ void MainWindow::readFromSocket()
     QByteArray buffer;
 
     QDataStream socketStream(socket);
-//    socketStream.setVersion(QDataStream::Qt_5_15);
 
     socketStream.startTransaction();
     socketStream >> buffer;
@@ -87,25 +76,30 @@ void MainWindow::displayMessage(const QString& str)
     QMessageBox::information(this, "Client", str);
 }
 
-void MainWindow::on_LogIn_clicked()
+void MainWindow::on_pushButton_clicked()
 {
     if(socket)
     {
         if(socket->isOpen())
         {
-            QString str = ui->lineEdit->text();
+            QString fname = ui->fn_lineEdit->text();
+            QString lname = ui->ln_lineEdit->text();
+            QString phone = ui->phone_lineEdit->text();
+            QString id = ui->id_lineEdit->text();
 
+            QString all_info = fname + "," + lname + "," + phone + "," + id;
             QDataStream socketStream(socket);
             QByteArray header;
-            header.prepend(QString("fileType:message,fileName:null,fileSize:%1;").arg(str.size()).toUtf8());
+            header.prepend(QString("fileType:message,fileName:null,fileSize:%1;").arg(all_info.size()).toUtf8());
             header.resize(128);
-
-            QByteArray byteArray = str.toUtf8();
+            QByteArray byteArray = all_info.toUtf8();
             byteArray.prepend(header);
-
             socketStream << byteArray;
 
-            ui->lineEdit->clear();
+            ui->fn_lineEdit->clear();
+            ui->ln_lineEdit->clear();
+            ui->phone_lineEdit->clear();
+            ui->id_lineEdit->clear();
         }
         else
             QMessageBox::critical(this,"Client","Socket doesn't seem to be opened");

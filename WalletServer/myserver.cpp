@@ -88,7 +88,8 @@ void MyServer::displayError(QAbstractSocket::SocketError socketError)
 
 void MyServer::displayMessage(const QString& str)
 {
-    QMessageBox::information(this,"Server",str);
+    //QMessageBox::information(this,"Server",str);
+    ui->textBrowser->append(str);
 }
 
 MyServer::~MyServer()

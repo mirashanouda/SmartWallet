@@ -8,7 +8,9 @@
 #include <QByteArray>
 #include <QHostAddress>
 #include <QDebug>
+#include <vector>
 
+using namespace std;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,5 +40,6 @@ private slots:
     void displayError(QAbstractSocket::SocketError socketError);
 
 
+    void on_pushButton_clicked();
 };
 #endif // MAINWINDOW_H
