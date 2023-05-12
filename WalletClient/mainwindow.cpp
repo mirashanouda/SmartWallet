@@ -7,11 +7,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
     socket = new QTcpSocket();
     socket->connectToHost(QHostAddress::LocalHost, 8080);
     socket->open(QIODevice::ReadWrite);
@@ -21,6 +16,11 @@ MainWindow::~MainWindow()
     else {
         QMessageBox::warning(this, "Client", "Failed to connect");
     }
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
 }
 
 
@@ -35,5 +35,5 @@ void MainWindow::on_LogIn_clicked()
             QMessageBox::warning(this, "Client", "Failed to send data");
         }
     }
-    QMessageBox::information(this, "Title", input);
+//    QMessageBox::information(this, "Title", input);
 }
