@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QTcpSocket>
 #include <QTcpServer>
-#include <QList>
+#include <QSet>
 #include <QString>
 #include <QMessageBox>
 
@@ -23,16 +23,23 @@ public:
     MyServer(QWidget *parent = nullptr);
     ~MyServer();
 
+signals:
+    void newMessage(QString);
+
 private:
     Ui::MyServer *ui;
     QTcpServer *server;
-    QList<QTcpSocket*> connection_list;
-
-private:
-    void add_new_connection(QTcpSocket* socket);
-    void read_data_from_socket();
+    QSet<QTcpSocket*> connections;
 
 private slots:
     void newConnection();
+    void addToSocketSet(QTcpSocket* socket);
+
+    void readFromSocket();
+    void discardSocket();
+    void displayError(QAbstractSocket::SocketError socketError);
+
+    void displayMessage(const QString& str);
+
 };
 #endif // MYSERVER_H

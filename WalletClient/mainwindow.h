@@ -18,15 +18,25 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+private:
+    Ui::MainWindow *ui;
+    QTcpSocket *socket;
+
+signals:
+    void newMessage(QString);
+
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
     void on_LogIn_clicked();
+    void displayMessage(const QString& str);
 
-private:
-    Ui::MainWindow *ui;
-    QTcpSocket *socket;
+    void readFromSocket();
+    void discardSocket();
+    void displayError(QAbstractSocket::SocketError socketError);
+
+
 };
 #endif // MAINWINDOW_H

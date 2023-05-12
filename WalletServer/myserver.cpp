@@ -8,36 +8,98 @@ MyServer::MyServer(QWidget *parent)
     ui->setupUi(this);
     server = new QTcpServer(this);
     if(server->listen(QHostAddress::Any, 8080)){
-        connect(server, SIGNAL(newConnection()), this, SLOT(newConnection())
-);
-        QMessageBox::information(this, "Server", "Sever connected");
+        connect(this, &MyServer::newMessage, this, &MyServer::displayMessage);
+        connect(server, &QTcpServer::newConnection, this, &MyServer::newConnection);
     }
-    else {
-        QMessageBox::warning(this, "Server", "Sever failed");
+    else{
+        QMessageBox::critical(this,"Server", QString("Unable to start the server: %1.").arg(server->errorString()));
+        exit(EXIT_FAILURE);
     }
+}
+
+void MyServer::newConnection(){
+    while(server->hasPendingConnections())
+        addToSocketSet(server->nextPendingConnection());
+}
+
+
+void MyServer::addToSocketSet(QTcpSocket *socket)
+{
+    connections.insert(socket);
+    connect(socket, &QTcpSocket::readyRead, this, &MyServer::readFromSocket);
+    connect(socket, &QTcpSocket::disconnected, this, &MyServer::discardSocket);
+//    displayMessage(QString("INFO :: Client with sockd:%1 has just entered the room").arg(socket->socketDescriptor()));
+}
+
+
+void MyServer::readFromSocket()
+{
+    QTcpSocket *socket = reinterpret_cast<QTcpSocket*>(sender());
+    QByteArray server_msg;
+
+    QDataStream socketStream(socket);
+    socketStream.startTransaction();
+    socketStream >> server_msg;
+
+    if(!socketStream.commitTransaction())
+    {
+        QString message = "Waiting for more data to come..";
+        emit newMessage(message);
+        return;
+    }
+
+    QString header = server_msg.mid(0,128);
+    QString fileType = header.split(",")[0].split(":")[1];
+
+    server_msg = server_msg.mid(128);
+
+    QString msg = QString::fromStdString(server_msg.toStdString());
+    emit newMessage(msg);
+}
+
+void MyServer::discardSocket()
+{
+    QTcpSocket* socket = reinterpret_cast<QTcpSocket*>(sender());
+    QSet<QTcpSocket*>::iterator it = connections.find(socket);
+    if (it != connections.end()){
+        displayMessage(QString("INFO :: A client has just left the room").arg(socket->socketDescriptor()));
+        connections.remove(*it);
+    }
+    socket->deleteLater();
+}
+
+void MyServer::displayError(QAbstractSocket::SocketError socketError)
+{
+    switch (socketError) {
+        case QAbstractSocket::RemoteHostClosedError:
+        break;
+        case QAbstractSocket::HostNotFoundError:
+            QMessageBox::information(this, "QTCPServer", "The host was not found. Please check the host name and port settings.");
+        break;
+        case QAbstractSocket::ConnectionRefusedError:
+            QMessageBox::information(this, "QTCPServer", "The connection was refused by the peer. Make sure QTCPServer is running, and check that the host name and port settings are correct.");
+        break;
+        default:
+            QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
+            QMessageBox::information(this, "QTCPServer", QString("The following error occurred: %1.").arg(socket->errorString()));
+        break;
+    }
+}
+
+void MyServer::displayMessage(const QString& str)
+{
+    QMessageBox::information(this,"Server",str);
 }
 
 MyServer::~MyServer()
 {
-    delete ui;
-}
-
-void MyServer::read_data_from_socket()
-{
-    QTcpSocket *socket = reinterpret_cast<QTcpSocket*>(sender());
-    QByteArray server_msg = socket->readAll();
-    QString msg = QString::fromStdString(server_msg.toStdString());
-    QMessageBox::information(this, "Server", "Message from client" + msg);
-}
-
-void MyServer::add_new_connection(QTcpSocket *socket)
-{
-    connection_list.append(socket);
-    connect(socket, SIGNAL(readyRead()), this, SLOT(read_data_from_socket));
-}
-
-void MyServer::newConnection(){
-    while(server->hasPendingConnections()){
-        add_new_connection(server->nextPendingConnection());
+    foreach (QTcpSocket* socket, connections)
+    {
+        socket->close();
+        socket->deleteLater();
     }
+
+    server->close();
+    server->deleteLater();
+    delete ui;
 }
