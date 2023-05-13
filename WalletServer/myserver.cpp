@@ -1,5 +1,6 @@
 #include "myserver.h"
 #include "ui_myserver.h"
+#include "usr_record.h"
 
 MyServer::MyServer(QWidget *parent)
     : QMainWindow(parent)
@@ -28,7 +29,7 @@ void MyServer::addToSocketSet(QTcpSocket *socket)
     connections.insert(socket);
     connect(socket, &QTcpSocket::readyRead, this, &MyServer::readFromSocket);
     connect(socket, &QTcpSocket::disconnected, this, &MyServer::discardSocket);
-//    displayMessage(QString("INFO :: Client with sockd:%1 has just entered the room").arg(socket->socketDescriptor()));
+    displayMessage(QString("INFO :: Client with sockd:%1 has just entered the room").arg(socket->socketDescriptor()));
 }
 
 
@@ -55,6 +56,7 @@ void MyServer::readFromSocket()
 
     QString msg = QString::fromStdString(server_msg.toStdString());
     emit newMessage(msg);
+    processIncommingUserData(msg);
 }
 
 void MyServer::discardSocket()
@@ -86,9 +88,22 @@ void MyServer::displayError(QAbstractSocket::SocketError socketError)
     }
 }
 
+void MyServer::processIncommingUserData(QString usr_str)
+{
+    string usr_std_str = usr_str.toStdString();
+    UsrRecord rec(usr_std_str);
+    UsrRecord rec2(usr_std_str);
+    records[
+            QString::fromStdString(rec.get_fname())
+            ] = rec;
+
+    if(records.find(QString::fromStdString(rec2.get_fname())) == records.end()) emit newMessage("rec2 is different");
+    else emit newMessage("the user already exists!");
+
+}
+
 void MyServer::displayMessage(const QString& str)
 {
-    //QMessageBox::information(this,"Server",str);
     ui->textBrowser->append(str);
 }
 

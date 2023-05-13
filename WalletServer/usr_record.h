@@ -1,11 +1,25 @@
 #ifndef USR_RECORD_H
 #define USR_RECORD_H
 
+#include <iostream>
+#include <string>
+#include <QString>
 
-class usr_record
+using namespace std;
+
+class UsrRecord
 {
+private:
+    string fname;
+    string lname;
+    int phone;
+    int id;
+
 public:
-    usr_record();
+    UsrRecord();
+    UsrRecord(string msg);
+    string get_fname();
+    int get_phone();
 };
 
 #endif // USR_RECORD_H

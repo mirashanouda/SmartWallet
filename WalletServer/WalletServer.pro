@@ -20,10 +20,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    myserver.cpp
+    myserver.cpp \
+    usr_record.cpp
 
 HEADERS += \
-    myserver.h
+    myserver.h \
+    usr_record.h
 
 FORMS += \
     myserver.ui
