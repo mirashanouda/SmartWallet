@@ -92,15 +92,38 @@ void MyServer::processIncommingUserData(QString usr_str)
 {
     string usr_std_str = usr_str.toStdString();
     UsrRecord rec(usr_std_str);
-    UsrRecord rec2(usr_std_str);
-    records[
-            QString::fromStdString(rec.get_fname())
-            ] = rec;
+    QString qname = QString::fromStdString(rec.get_fname());
+    records[qname] = rec;
+    emit newMessage("New User added!");
 
-    if(records.find(QString::fromStdString(rec2.get_fname())) == records.end()) emit newMessage("rec2 is different");
-    else emit newMessage("the user already exists!");
-
+    foreach (QTcpSocket* socket,connections)
+    {
+        sendToClient(socket, qname);
+    }
 }
+
+void MyServer::sendToClient(QTcpSocket* socket, QString data)
+{
+    if(socket)
+    {
+        if(socket->isOpen())
+        {
+            QDataStream socketStream(socket);
+            QByteArray header;
+            header.prepend(QString("fileType:message,fileName:null,fileSize:%1;").arg(data.size()).toUtf8());
+            header.resize(128);
+
+            QByteArray byteArray = data.toUtf8();
+            byteArray.prepend(header);
+            socketStream << byteArray;
+        }
+        else
+            QMessageBox::critical(this,"Server","Socket doesn't seem to be opened");
+    }
+    else
+        QMessageBox::critical(this,"Server","Not connected");
+}
+
 
 void MyServer::displayMessage(const QString& str)
 {

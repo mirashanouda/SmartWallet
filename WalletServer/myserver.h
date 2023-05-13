@@ -47,6 +47,7 @@ private slots:
 
     void displayMessage(const QString& str);
     void processIncommingUserData(QString usr_str);
+    void sendToClient(QTcpSocket* socket,QString data);
 
 };
 #endif // MYSERVER_H

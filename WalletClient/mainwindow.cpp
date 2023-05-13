@@ -13,8 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     socket->connectToHost(QHostAddress::LocalHost,8080);
 
     if(!socket->waitForConnected())
-//        ui->statusBar->showMessage("Connected to Server");
-    /*else*/{
+    {
         QMessageBox::critical(this,"QTCPClient", QString("The following error occurred: %1.").arg(socket->errorString()));
         exit(EXIT_FAILURE);
     }
@@ -29,10 +28,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::readFromSocket()
 {
+//    QTcpSocket *socket = reinterpret_cast<QTcpSocket*>(sender());
+
     QByteArray buffer;
-
     QDataStream socketStream(socket);
-
     socketStream.startTransaction();
     socketStream >> buffer;
 
@@ -42,6 +41,10 @@ void MainWindow::readFromSocket()
         emit newMessage(message);
         return;
     }
+    QString header = buffer.mid(0,128);
+    QString fileType = header.split(",")[0].split(":")[1];
+    buffer = buffer.mid(128);
+
     QString message = QString("%2").arg(QString::fromStdString(buffer.toStdString()));
     emit newMessage(message);
 }
