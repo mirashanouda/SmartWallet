@@ -100,10 +100,11 @@ void MainWindow::on_pushButton_clicked()
             byteArray.prepend(header);
             socketStream << byteArray;
 
-            ui->fn_lineEdit->clear();
-            ui->ln_lineEdit->clear();
-            ui->phone_lineEdit->clear();
-            ui->id_lineEdit->clear();
+//            ui->fn_lineEdit->clear();
+//            ui->ln_lineEdit->clear();
+//            ui->phone_lineEdit->clear();
+//            ui->id_lineEdit->clear();
+            emit newMessage("There is a socket!");
         }
         else
             QMessageBox::critical(this,"Client","Socket doesn't seem to be opened");
