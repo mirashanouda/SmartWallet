@@ -79,7 +79,6 @@ void MainWindow::displayMessage(const QString& str)
     QMessageBox::information(this, "Client", str);
 }
 
-
 void MainWindow::on_pushButton_clicked()
 {
     if(socket)
@@ -100,17 +99,14 @@ void MainWindow::on_pushButton_clicked()
             byteArray.prepend(header);
             socketStream << byteArray;
 
-//            ui->fn_lineEdit->clear();
-//            ui->ln_lineEdit->clear();
-//            ui->phone_lineEdit->clear();
-//            ui->id_lineEdit->clear();
-            emit newMessage("There is a socket!");
+            ui->fn_lineEdit->clear();
+            ui->ln_lineEdit->clear();
+            ui->phone_lineEdit->clear();
+            ui->id_lineEdit->clear();
         }
         else
             QMessageBox::critical(this,"Client","Socket doesn't seem to be opened");
     }
     else
         QMessageBox::critical(this,"Client","Not connected");
-
 }
-

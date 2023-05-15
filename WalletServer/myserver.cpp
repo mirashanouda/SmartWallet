@@ -76,14 +76,14 @@ void MyServer::displayError(QAbstractSocket::SocketError socketError)
         case QAbstractSocket::RemoteHostClosedError:
         break;
         case QAbstractSocket::HostNotFoundError:
-            QMessageBox::information(this, "Server", "The host was not found. Please check the host name and port settings.");
+            QMessageBox::information(this, "QTCPServer", "The host was not found. Please check the host name and port settings.");
         break;
         case QAbstractSocket::ConnectionRefusedError:
-            QMessageBox::information(this, "Server", "The connection was refused by the peer. Make sure QTCPServer is running, and check that the host name and port settings are correct.");
+            QMessageBox::information(this, "QTCPServer", "The connection was refused by the peer. Make sure QTCPServer is running, and check that the host name and port settings are correct.");
         break;
         default:
             QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
-            QMessageBox::information(this, "Server", QString("The following error occurred: %1.").arg(socket->errorString()));
+            QMessageBox::information(this, "QTCPServer", QString("The following error occurred: %1.").arg(socket->errorString()));
         break;
     }
 }
