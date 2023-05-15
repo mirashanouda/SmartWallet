@@ -121,7 +121,7 @@
      <rect>
       <x>230</x>
       <y>20</y>
-      <width>312</width>
+      <width>341</width>
       <height>44</height>
      </rect>
     </property>
@@ -146,17 +146,11 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>280</y>
-      <width>291</width>
-      <height>61</height>
+      <x>310</x>
+      <y>290</y>
+      <width>211</width>
+      <height>51</height>
      </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
     </property>
     <property name="font">
      <font>

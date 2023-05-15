@@ -32,14 +32,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_LogIn_clicked();
     void displayMessage(const QString& str);
 
     void readFromSocket();
     void discardSocket();
     void displayError(QAbstractSocket::SocketError socketError);
-
-
     void on_pushButton_clicked();
 };
 #endif // MAINWINDOW_H

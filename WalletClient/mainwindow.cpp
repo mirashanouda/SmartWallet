@@ -79,6 +79,7 @@ void MainWindow::displayMessage(const QString& str)
     QMessageBox::information(this, "Client", str);
 }
 
+
 void MainWindow::on_pushButton_clicked()
 {
     if(socket)
@@ -109,4 +110,6 @@ void MainWindow::on_pushButton_clicked()
     }
     else
         QMessageBox::critical(this,"Client","Not connected");
+
 }
+
