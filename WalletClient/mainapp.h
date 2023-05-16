@@ -21,7 +21,6 @@ class MainApp : public QDialog
 
 public:
     explicit MainApp(QWidget *parent = nullptr, QString info = "New,User,0,0");
-//    MainApp(QString);
     ~MainApp();
 
 private:
