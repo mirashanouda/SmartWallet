@@ -65,7 +65,7 @@ void MyServer::discardSocket()
     QTcpSocket* socket = reinterpret_cast<QTcpSocket*>(sender());
     QSet<QTcpSocket*>::iterator it = connections.find(socket);
     if (it != connections.end()){
-        displayMessage(QString("INFO :: A client has just left the room").arg(socket->socketDescriptor()));
+        displayMessage(QString("INFO :: A usr_std_strclient has just left the room").arg(socket->socketDescriptor()));
         connections.remove(*it);
     }
     socket->deleteLater();
@@ -94,13 +94,13 @@ void MyServer::processIncommingUserData(QString usr_str)
     string usr_std_str = usr_str.toStdString();
     UsrRecord rec(usr_std_str);
 
-//    QString qname = QString::fromStdString(rec.get_fname());
-//    records[qname] = rec;
-//    emit newMessage("New User added!");
-//    foreach (QTcpSocket* socket,connections)
-//    {
-//        sendToClient(socket, qname);
-//    }
+    QString qname = QString::fromStdString(rec.get_fname());
+    records[qname] = rec;
+    emit newMessage("New User added!");
+    foreach (QTcpSocket* socket,connections)
+    {
+        sendToClient(socket, qname);
+    }
 }
 
 void MyServer::sendToClient(QTcpSocket* socket, QString data)
