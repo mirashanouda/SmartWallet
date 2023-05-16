@@ -29,15 +29,16 @@ void MyServer::addToSocketSet(QTcpSocket *socket)
     connections.insert(socket);
     connect(socket, &QTcpSocket::readyRead, this, &MyServer::readFromSocket);
     connect(socket, &QTcpSocket::disconnected, this, &MyServer::discardSocket);
+    connect(socket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error), this, &MyServer::displayError);
     displayMessage(QString("INFO :: Client with sockd:%1 has just entered the room").arg(socket->socketDescriptor()));
 }
 
 
 void MyServer::readFromSocket()
 {
+
     QTcpSocket *socket = reinterpret_cast<QTcpSocket*>(sender());
     QByteArray server_msg;
-
     QDataStream socketStream(socket);
     socketStream.startTransaction();
     socketStream >> server_msg;
@@ -92,14 +93,14 @@ void MyServer::processIncommingUserData(QString usr_str)
 {
     string usr_std_str = usr_str.toStdString();
     UsrRecord rec(usr_std_str);
-    QString qname = QString::fromStdString(rec.get_fname());
-    records[qname] = rec;
-    emit newMessage("New User added!");
 
-    foreach (QTcpSocket* socket,connections)
-    {
-        sendToClient(socket, qname);
-    }
+//    QString qname = QString::fromStdString(rec.get_fname());
+//    records[qname] = rec;
+//    emit newMessage("New User added!");
+//    foreach (QTcpSocket* socket,connections)
+//    {
+//        sendToClient(socket, qname);
+//    }
 }
 
 void MyServer::sendToClient(QTcpSocket* socket, QString data)
