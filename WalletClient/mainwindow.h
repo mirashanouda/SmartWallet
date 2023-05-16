@@ -9,6 +9,7 @@
 #include <QHostAddress>
 #include <QDebug>
 #include <vector>
+#include "mainapp.h"
 
 using namespace std;
 
@@ -22,21 +23,22 @@ class MainWindow : public QMainWindow
 
 private:
     Ui::MainWindow *ui;
-    QTcpSocket *socket;
+//    QTcpSocket *socket;
+    MainApp *main_app;
 
-signals:
-    void newMessage(QString);
+//signals:
+//    void newMessage(QString);
 
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
-    void displayMessage(const QString& str);
+//    void displayMessage(const QString& str);
 
-    void readFromSocket();
-    void discardSocket();
-    void displayError(QAbstractSocket::SocketError socketError);
+//    void readFromSocket();
+//    void discardSocket();
+//    void displayError(QAbstractSocket::SocketError socketError);
     void on_pushButton_clicked();
 };
 #endif // MAINWINDOW_H
