@@ -19,7 +19,9 @@ public:
     UsrRecord();
     UsrRecord(string msg);
     string get_fname();
+    string get_lname();
     int get_phone();
+    int get_id();
 };
 
 #endif // USR_RECORD_H

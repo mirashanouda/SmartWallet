@@ -29,7 +29,17 @@ string UsrRecord::get_fname()
     return fname;
 }
 
+string UsrRecord::get_lname()
+{
+    return lname;
+}
+
 int UsrRecord::get_phone()
 {
     return phone;
+}
+
+int UsrRecord::get_id()
+{
+    return id;
 }

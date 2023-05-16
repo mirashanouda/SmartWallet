@@ -47,7 +47,8 @@ void MainApp::readFromSocket()
     QString fileType = header.split(",")[0].split(":")[1];
     buffer = buffer.mid(128);
 
-    QString message = QString("%2").arg(QString::fromStdString(buffer.toStdString()));
+    QString message = QString("Welcome, %2!").arg(QString::fromStdString(buffer.toStdString()));
+    ui->label->setText(message);
     emit newMessage(message);
 }
 

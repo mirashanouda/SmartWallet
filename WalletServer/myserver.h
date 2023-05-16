@@ -35,7 +35,7 @@ private:
     Ui::MyServer *ui;
     QTcpServer *server;
     QSet<QTcpSocket*> connections;
-    map<QString, UsrRecord> records;
+    map<int, UsrRecord> records;
 
 private slots:
     void newConnection();
