@@ -35,7 +35,8 @@ private:
     Ui::MyServer *ui;
     QTcpServer *server;
     QSet<QTcpSocket*> connections;
-    map<int, UsrRecord> records;
+    map<int, UsrRecord*> records;
+    UsrRecord *rec;
 
 private slots:
     void newConnection();
@@ -48,6 +49,6 @@ private slots:
     void displayMessage(const QString& str);
     void processIncommingUserData(QString usr_str);
     void sendToClient(QTcpSocket* socket,QString data);
-
+    void sendBalance(QString show_hide);
 };
 #endif // MYSERVER_H

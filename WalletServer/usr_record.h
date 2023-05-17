@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <stack>
 #include <QString>
 
 using namespace std;
@@ -14,6 +15,8 @@ private:
     string lname;
     int phone;
     int id;
+    double balance;
+    stack<pair<int, int>> transactions;
 
 public:
     UsrRecord();
@@ -22,6 +25,8 @@ public:
     string get_lname();
     int get_phone();
     int get_id();
+    string get_balance();
+    void set_balance(int bal);
 };
 
 #endif // USR_RECORD_H

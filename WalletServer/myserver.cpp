@@ -57,7 +57,13 @@ void MyServer::readFromSocket()
 
     QString msg = QString::fromStdString(server_msg.toStdString());
     emit newMessage(msg);
-    processIncommingUserData(msg);
+    if (msg[0] == 'I') processIncommingUserData(msg.remove(0,1));
+    else if (msg[0] == 'B') sendBalance(msg.remove(0,1));
+    else if (msg[0] == 'T') {
+        int bal = stoi(msg.remove(0,1).toStdString());
+        rec->set_balance(bal);
+        sendToClient(socket, QString::fromStdString("B" + rec->get_balance()));
+    }
 }
 
 void MyServer::discardSocket()
@@ -92,13 +98,15 @@ void MyServer::displayError(QAbstractSocket::SocketError socketError)
 void MyServer::processIncommingUserData(QString usr_str)
 {
     string usr_std_str = usr_str.toStdString();
-    UsrRecord rec(usr_std_str);
+    rec = new UsrRecord(usr_std_str);
 
-    QString name = QString::fromStdString(rec.get_fname() + " " + rec.get_lname());
-    if(records.count(rec.get_id())) emit newMessage("User already existing!");
+    QString name = QString::fromStdString("N" + rec->get_fname() + " " + rec->get_lname());
+    QString balance = QString::fromStdString(rec->get_balance());
+
+    if(records.count(rec->get_id())) emit newMessage("User already existing!");
     else {
         emit newMessage("New User Added!");
-        records[rec.get_id()] = rec;
+        records[rec->get_id()] = rec;
     }
 
     foreach (QTcpSocket* socket,connections)
@@ -127,6 +135,18 @@ void MyServer::sendToClient(QTcpSocket* socket, QString data)
     }
     else
         QMessageBox::critical(this,"Server","Not connected");
+}
+
+void MyServer::sendBalance(QString show_hide)
+{
+    QString bal;
+    if(show_hide == "0") bal = QString::fromStdString("B" + rec->get_balance());
+    else bal = "B******";
+
+    foreach (QTcpSocket* socket,connections)
+    {
+        sendToClient(socket, bal);
+    }
 }
 
 

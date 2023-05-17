@@ -14,10 +14,10 @@ MainApp::MainApp(QWidget *parent, QString info) :
 
     if(!socket->waitForConnected())
     {
-        QMessageBox::critical(this,"QTCPClient", QString("The following error occurred: %1.").arg(socket->errorString()));
+        QMessageBox::critical(this,"Client", QString("The following error occurred: %1.").arg(socket->errorString()));
         exit(EXIT_FAILURE);
     }
-    sendToServer(info);
+    sendToServer("I" + info);
 }
 
 
@@ -30,8 +30,6 @@ MainApp::~MainApp()
 
 void MainApp::readFromSocket()
 {
-//    QTcpSocket *socket = reinterpret_cast<QTcpSocket*>(sender());
-
     QByteArray buffer;
     QDataStream socketStream(socket);
     socketStream.startTransaction();
@@ -47,9 +45,15 @@ void MainApp::readFromSocket()
     QString fileType = header.split(",")[0].split(":")[1];
     buffer = buffer.mid(128);
 
-    QString message = QString("Welcome, %2!").arg(QString::fromStdString(buffer.toStdString()));
-    ui->label->setText(message);
-    emit newMessage(message);
+    QString msg = QString("%2").arg(QString::fromStdString(buffer.toStdString()));
+    if (msg[0] == 'N'){
+        msg.remove(0,1);
+        ui->label->setText("Welcome, " + msg + "!");
+    }
+    if(msg[0] == 'B'){
+        msg.remove(0,1);
+        ui->label_2->setText("Account Balance: " + msg);
+    }
 }
 
 void MainApp::discardSocket()
@@ -103,3 +107,25 @@ void MainApp::displayMessage(const QString& str)
     QMessageBox::information(this, "Client", str);
 }
 
+
+void MainApp::on_pushButton_clicked()
+{
+    sendToServer(QString::fromStdString("B" + to_string(show_hide)));
+    show_hide ^= 1;
+}
+
+void MainApp::on_push_deposite_clicked()
+{
+    if(ui->text_deposite->text() != "") {
+        sendToServer("T" + ui->text_deposite->text());
+    }
+    else QMessageBox::critical(this, "Error!", "Please enter the amount of money to deposite");
+}
+
+void MainApp::on_push_withdraw_clicked()
+{
+    if(ui->text_withdraw->text() != "") {
+        sendToServer("T-" + ui->text_withdraw->text());
+    }
+    else QMessageBox::critical(this, "Error!", "Please enter the amount of money to withdraw");
+}

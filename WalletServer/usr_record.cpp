@@ -22,6 +22,7 @@ UsrRecord::UsrRecord(string msg)
     }
     phone = stoi(s_phone);
     id = stoi(s_id);
+    balance = 0.0;
 }
 
 string UsrRecord::get_fname()
@@ -42,4 +43,14 @@ int UsrRecord::get_phone()
 int UsrRecord::get_id()
 {
     return id;
+}
+
+string UsrRecord::get_balance()
+{
+    return to_string(balance);
+}
+
+void UsrRecord::set_balance(int bal)
+{
+    balance += bal;
 }

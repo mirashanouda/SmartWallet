@@ -11,6 +11,8 @@
 #include <QDebug>
 #include <vector>
 
+using namespace std;
+
 namespace Ui {
 class MainApp;
 }
@@ -26,6 +28,7 @@ public:
 private:
     Ui::MainApp *ui;
     QTcpSocket *socket;
+    int show_hide = 0;
 
 signals:
     void newMessage(QString);
@@ -36,6 +39,9 @@ private slots:
     void discardSocket();
     void displayError(QAbstractSocket::SocketError socketError);
     void sendToServer(QString info);
+    void on_pushButton_clicked();
+    void on_push_deposite_clicked();
+    void on_push_withdraw_clicked();
 };
 
 #endif // MAINAPP_H
