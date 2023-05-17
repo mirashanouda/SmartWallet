@@ -66,34 +66,6 @@ void MyServer::readFromSocket()
     }
 }
 
-void MyServer::discardSocket()
-{
-    QTcpSocket* socket = reinterpret_cast<QTcpSocket*>(sender());
-    QSet<QTcpSocket*>::iterator it = connections.find(socket);
-    if (it != connections.end()){
-        displayMessage(QString("INFO :: A usr_std_strclient has just left the room").arg(socket->socketDescriptor()));
-        connections.remove(*it);
-    }
-    socket->deleteLater();
-}
-
-void MyServer::displayError(QAbstractSocket::SocketError socketError)
-{
-    switch (socketError) {
-        case QAbstractSocket::RemoteHostClosedError:
-        break;
-        case QAbstractSocket::HostNotFoundError:
-            QMessageBox::information(this, "QTCPServer", "The host was not found. Please check the host name and port settings.");
-        break;
-        case QAbstractSocket::ConnectionRefusedError:
-            QMessageBox::information(this, "QTCPServer", "The connection was refused by the peer. Make sure QTCPServer is running, and check that the host name and port settings are correct.");
-        break;
-        default:
-            QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
-            QMessageBox::information(this, "QTCPServer", QString("The following error occurred: %1.").arg(socket->errorString()));
-        break;
-    }
-}
 
 void MyServer::processIncommingUserData(QString usr_str)
 {
@@ -154,6 +126,36 @@ void MyServer::displayMessage(const QString& str)
 {
     ui->textBrowser->append(str);
 }
+
+void MyServer::discardSocket()
+{
+    QTcpSocket* socket = reinterpret_cast<QTcpSocket*>(sender());
+    QSet<QTcpSocket*>::iterator it = connections.find(socket);
+    if (it != connections.end()){
+        displayMessage(QString("INFO :: A usr_std_strclient has just left the room").arg(socket->socketDescriptor()));
+        connections.remove(*it);
+    }
+    socket->deleteLater();
+}
+
+void MyServer::displayError(QAbstractSocket::SocketError socketError)
+{
+    switch (socketError) {
+        case QAbstractSocket::RemoteHostClosedError:
+        break;
+        case QAbstractSocket::HostNotFoundError:
+            QMessageBox::information(this, "QTCPServer", "The host was not found. Please check the host name and port settings.");
+        break;
+        case QAbstractSocket::ConnectionRefusedError:
+            QMessageBox::information(this, "QTCPServer", "The connection was refused by the peer. Make sure QTCPServer is running, and check that the host name and port settings are correct.");
+        break;
+        default:
+            QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender());
+            QMessageBox::information(this, "QTCPServer", QString("The following error occurred: %1.").arg(socket->errorString()));
+        break;
+    }
+}
+
 
 MyServer::~MyServer()
 {

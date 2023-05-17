@@ -56,30 +56,7 @@ void MainApp::readFromSocket()
     }
 }
 
-void MainApp::discardSocket()
-{
-    socket->deleteLater();
-    socket=nullptr;
-    QMessageBox::critical(this,"Client","Disconnected!");
-}
 
-
-void MainApp::displayError(QAbstractSocket::SocketError socketError)
-{
-    switch (socketError) {
-        case QAbstractSocket::RemoteHostClosedError:
-        break;
-        case QAbstractSocket::HostNotFoundError:
-            QMessageBox::information(this, "Client", "The host was not found. Please check the host name and port settings.");
-        break;
-        case QAbstractSocket::ConnectionRefusedError:
-            QMessageBox::information(this, "Client", "Make sure QTCPServer is running, and check that the host name and port settings are correct.");
-        break;
-        default:
-            QMessageBox::information(this, "Client", QString("The following error occurred: %1.").arg(socket->errorString()));
-        break;
-    }
-}
 
 void MainApp::sendToServer(QString info)
 {
@@ -118,6 +95,7 @@ void MainApp::on_push_deposite_clicked()
 {
     if(ui->text_deposite->text() != "") {
         sendToServer("T" + ui->text_deposite->text());
+        ui->text_deposite->clear();
     }
     else QMessageBox::critical(this, "Error!", "Please enter the amount of money to deposite");
 }
@@ -126,6 +104,33 @@ void MainApp::on_push_withdraw_clicked()
 {
     if(ui->text_withdraw->text() != "") {
         sendToServer("T-" + ui->text_withdraw->text());
+        ui->text_withdraw->clear();
     }
     else QMessageBox::critical(this, "Error!", "Please enter the amount of money to withdraw");
+}
+
+
+void MainApp::discardSocket()
+{
+    socket->deleteLater();
+    socket=nullptr;
+    QMessageBox::critical(this,"Client","Disconnected!");
+}
+
+
+void MainApp::displayError(QAbstractSocket::SocketError socketError)
+{
+    switch (socketError) {
+        case QAbstractSocket::RemoteHostClosedError:
+        break;
+        case QAbstractSocket::HostNotFoundError:
+            QMessageBox::information(this, "Client", "The host was not found. Please check the host name and port settings.");
+        break;
+        case QAbstractSocket::ConnectionRefusedError:
+            QMessageBox::information(this, "Client", "Make sure QTCPServer is running, and check that the host name and port settings are correct.");
+        break;
+        default:
+            QMessageBox::information(this, "Client", QString("The following error occurred: %1.").arg(socket->errorString()));
+        break;
+    }
 }
