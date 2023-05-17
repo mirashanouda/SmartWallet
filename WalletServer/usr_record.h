@@ -15,8 +15,8 @@ private:
     string lname;
     int phone;
     int id;
-    double balance;
-    stack<pair<int, int>> transactions;
+    float balance;
+    stack<float> transactions;
 
 public:
     UsrRecord();
@@ -26,7 +26,8 @@ public:
     int get_phone();
     int get_id();
     string get_balance();
-    void set_balance(int bal);
+    void set_balance(float bal);
+    stack<float> get_transactions();
 };
 
 #endif // USR_RECORD_H

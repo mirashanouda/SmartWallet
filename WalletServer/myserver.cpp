@@ -60,10 +60,11 @@ void MyServer::readFromSocket()
     if (msg[0] == 'I') processIncommingUserData(msg.remove(0,1));
     else if (msg[0] == 'B') sendBalance(msg.remove(0,1));
     else if (msg[0] == 'T') {
-        int bal = stoi(msg.remove(0,1).toStdString());
+        float bal = stof(msg.remove(0,1).toStdString());
         rec->set_balance(bal);
         sendToClient(socket, QString::fromStdString("B" + rec->get_balance()));
     }
+    else if (msg[0] == 'R') sendTransactions();
 }
 
 
@@ -118,6 +119,20 @@ void MyServer::sendBalance(QString show_hide)
     foreach (QTcpSocket* socket,connections)
     {
         sendToClient(socket, bal);
+    }
+}
+
+void MyServer::sendTransactions()
+{
+    stack<float> temp_s = rec->get_transactions();
+    string trans_str = "R";
+    while (!temp_s.empty()) {
+        trans_str += (to_string(temp_s.top()) + "\n");
+        temp_s.pop();
+    }
+    foreach (QTcpSocket* socket,connections)
+    {
+        sendToClient(socket, QString::fromStdString(trans_str));
     }
 }
 

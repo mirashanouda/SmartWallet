@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QString>
+#include <QVBoxLayout>
 #include "mainapp.h"
 
 using namespace std;

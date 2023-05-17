@@ -50,9 +50,13 @@ void MainApp::readFromSocket()
         msg.remove(0,1);
         ui->label->setText("Welcome, " + msg + "!");
     }
-    if(msg[0] == 'B'){
+    else if(msg[0] == 'B'){
         msg.remove(0,1);
         ui->label_2->setText("Account Balance: " + msg);
+    }
+    else if (msg[0] == 'R'){
+        msg.remove(0,1);
+        ui->textEdit->setText(msg);
     }
 }
 
@@ -109,6 +113,16 @@ void MainApp::on_push_withdraw_clicked()
     else QMessageBox::critical(this, "Error!", "Please enter the amount of money to withdraw");
 }
 
+void MainApp::on_pushButton_cancel_clicked()
+{
+    sendToServer("X");
+    QMessageBox::information(this, "Confirmation", "The last transaction is canceled");
+}
+
+void MainApp::on_pushButton_show_trans_clicked()
+{
+    sendToServer("R");
+}
 
 void MainApp::discardSocket()
 {
@@ -134,3 +148,4 @@ void MainApp::displayError(QAbstractSocket::SocketError socketError)
         break;
     }
 }
+

@@ -10,7 +10,7 @@ UsrRecord::UsrRecord(string msg)
     int commas = 0;
     string s_phone = "",
            s_id = "";
-    for(int i = 0; i < msg.size(); i++){
+    for(int i = 0; i < (int)msg.size(); i++){
         if (msg[i] == ',') {
             commas++;
             continue;
@@ -50,7 +50,13 @@ string UsrRecord::get_balance()
     return to_string(balance);
 }
 
-void UsrRecord::set_balance(int bal)
+void UsrRecord::set_balance(float bal)
 {
     balance += bal;
+    transactions.push(bal);
+}
+
+stack<float> UsrRecord::get_transactions()
+{
+    return transactions;
 }

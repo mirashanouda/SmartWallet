@@ -42,6 +42,8 @@ private slots:
     void on_pushButton_clicked();
     void on_push_deposite_clicked();
     void on_push_withdraw_clicked();
+    void on_pushButton_show_trans_clicked();
+    void on_pushButton_cancel_clicked();
 };
 
 #endif // MAINAPP_H

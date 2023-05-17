@@ -50,5 +50,6 @@ private slots:
     void processIncommingUserData(QString usr_str);
     void sendToClient(QTcpSocket* socket,QString data);
     void sendBalance(QString show_hide);
+    void sendTransactions();
 };
 #endif // MYSERVER_H
