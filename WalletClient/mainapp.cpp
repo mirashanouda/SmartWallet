@@ -7,6 +7,7 @@ MainApp::MainApp(QWidget *parent, QString info) :
 {
     ui->setupUi(this);
     socket = new QTcpSocket();
+    usr_ID = "";
     connect(this, &MainApp::newMessage, this, &MainApp::displayMessage);
     connect(socket, &QTcpSocket::readyRead, this, &MainApp::readFromSocket);
     connect(socket, &QTcpSocket::disconnected, this, &MainApp::discardSocket);
@@ -48,7 +49,15 @@ void MainApp::readFromSocket()
     QString msg = QString("%2").arg(QString::fromStdString(buffer.toStdString()));
     if (msg[0] == 'N'){
         msg.remove(0,1);
-        ui->label->setText("Welcome, " + msg + "!");
+        QString name;
+        bool comma_flag = false;
+        for(auto c : msg){
+            if (c == ',') comma_flag = true;
+            else if (!comma_flag) name += c;
+            else if (comma_flag) usr_ID += c;
+        }
+        ui->label->setText("Welcome, " + name + "!");
+        QMessageBox::information(this, "ID", usr_ID);
     }
     else if(msg[0] == 'B'){
         msg.remove(0,1);

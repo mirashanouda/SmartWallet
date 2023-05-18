@@ -57,7 +57,7 @@ void MyServer::readFromSocket()
 
     QString msg = QString::fromStdString(server_msg.toStdString());
     emit newMessage(msg);
-    if (msg[0] == 'I') processIncommingUserData(msg.remove(0,1));
+    if (msg[0] == 'I') processIncommingUserData(socket, msg.remove(0,1));
     else if (msg[0] == 'B') sendBalance(msg.remove(0,1));
     else if (msg[0] == 'T') {
         float bal = stof(msg.remove(0,1).toStdString());
@@ -72,20 +72,21 @@ void MyServer::readFromSocket()
 }
 
 
-void MyServer::processIncommingUserData(QString usr_str)
+void MyServer::processIncommingUserData(QTcpSocket *socket, QString usr_str)
 {
     string usr_std_str = usr_str.toStdString();
     int ID = UsrRecord(usr_std_str).get_id();
+    usr_sockets[ID].push_back(socket);
     if (records.count(ID)) emit newMessage("User already existing!");
     else {
         emit newMessage("New User Added!");
         records[ID] = new UsrRecord(usr_std_str);
     }
     rec = records[ID];
-    QString name = QString::fromStdString("N" + rec->get_fname() + " " + rec->get_lname());
-    foreach (QTcpSocket* socket,connections)
+    QString info = QString::fromStdString("N" + rec->get_fname() + " " + rec->get_lname() + "," + to_string(ID));
+    foreach (QTcpSocket* socket, usr_sockets[ID]) //connections
     {
-        sendToClient(socket, name);
+        sendToClient(socket, info);
     }
 }
 
@@ -117,7 +118,7 @@ void MyServer::sendBalance(QString show_hide)
     if(show_hide == "0") bal = QString::fromStdString("B" + rec->get_balance());
     else bal = "B******";
 
-    foreach (QTcpSocket* socket,connections)
+    foreach (QTcpSocket* socket, connections) //connections
     {
         sendToClient(socket, bal);
     }

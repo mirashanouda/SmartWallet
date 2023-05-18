@@ -36,6 +36,8 @@ private:
     Ui::MyServer *ui;
     QTcpServer *server;
     QSet<QTcpSocket*> connections;
+    map<int, vector<QTcpSocket*>> usr_sockets;
+//    vector<pair<int, QTcpSocket*>> usr_sockets;
     map<int, UsrRecord*> records;
     UsrRecord *rec;
 
@@ -48,7 +50,7 @@ private slots:
     void displayError(QAbstractSocket::SocketError socketError);
 
     void displayMessage(const QString& str);
-    void processIncommingUserData(QString usr_str);
+    void processIncommingUserData(QTcpSocket *socket, QString usr_str);
     void sendToClient(QTcpSocket* socket,QString data);
     void sendBalance(QString show_hide);
     void sendTransactions();

@@ -29,6 +29,7 @@ private:
     Ui::MainApp *ui;
     QTcpSocket *socket;
     int show_hide = 0;
+    QString usr_ID;
 
 signals:
     void newMessage(QString);
