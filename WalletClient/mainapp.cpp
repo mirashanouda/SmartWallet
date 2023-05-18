@@ -111,7 +111,7 @@ void MainApp::on_push_withdraw_clicked()
 {
     if(ui->text_withdraw->text() != "") {
         bool isNum = false;
-        float value = ui->text_deposite->text().toFloat(&isNum);
+        float value = ui->text_withdraw->text().toFloat(&isNum);
         if(isNum) sendToServer("T-" + ui->text_withdraw->text());
         else QMessageBox::critical(this, "Error!", "Please enter a valid number");
         ui->text_withdraw->clear();

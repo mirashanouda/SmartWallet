@@ -13,6 +13,7 @@
 #include <QMap>
 #include "usr_record.h"
 #include <map>
+#include <cstring>
 
 using namespace std;
 
