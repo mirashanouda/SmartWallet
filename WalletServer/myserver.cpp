@@ -75,7 +75,6 @@ void MyServer::readFromSocket()
 void MyServer::processIncommingUserData(QString usr_str)
 {
     string usr_std_str = usr_str.toStdString();
-//    rec = new UsrRecord(usr_std_str);
     int ID = UsrRecord(usr_std_str).get_id();
     if (records.count(ID)) emit newMessage("User already existing!");
     else {
@@ -84,14 +83,6 @@ void MyServer::processIncommingUserData(QString usr_str)
     }
     rec = records[ID];
     QString name = QString::fromStdString("N" + rec->get_fname() + " " + rec->get_lname());
-//    //QString balance = QString::fromStdString(rec->get_balance());
-
-//    if(records.count(rec->get_id())) emit newMessage("User already existing!");
-//    else {
-//        emit newMessage("New User Added!");
-//        records[rec->get_id()] = rec;
-//    }
-
     foreach (QTcpSocket* socket,connections)
     {
         sendToClient(socket, name);

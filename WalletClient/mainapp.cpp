@@ -103,6 +103,7 @@ void MainApp::on_push_deposite_clicked()
         if(isNum) sendToServer("T" + ui->text_deposite->text());
         else QMessageBox::critical(this, "Error!", "Please enter a valid number");
         ui->text_deposite->clear();
+        ui->textEdit->clear();
     }
     else QMessageBox::critical(this, "Error!", "Please enter the amount of money to deposite");
 }
@@ -115,6 +116,7 @@ void MainApp::on_push_withdraw_clicked()
         if(isNum) sendToServer("T-" + ui->text_withdraw->text());
         else QMessageBox::critical(this, "Error!", "Please enter a valid number");
         ui->text_withdraw->clear();
+        ui->textEdit->clear();
     }
     else QMessageBox::critical(this, "Error!", "Please enter the amount of money to withdraw");
 }
