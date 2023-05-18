@@ -65,6 +65,10 @@ void MyServer::readFromSocket()
         sendToClient(socket, QString::fromStdString("B" + rec->get_balance()));
     }
     else if (msg[0] == 'R') sendTransactions();
+    else if (msg[0] == 'X') {
+        rec->cancel_last_trans();
+        sendToClient(socket, QString::fromStdString("B" + rec->get_balance()));
+    }
 }
 
 
@@ -125,10 +129,13 @@ void MyServer::sendBalance(QString show_hide)
 void MyServer::sendTransactions()
 {
     stack<float> temp_s = rec->get_transactions();
+    int size = temp_s.size();
     string trans_str = "R";
     while (!temp_s.empty()) {
-        trans_str += (to_string(temp_s.top()) + "\n");
+        if (temp_s.top() > 0) trans_str += ("#" + to_string(size) + " Deposite: " + to_string(temp_s.top()) + "\n");
+        else trans_str += ("#" + to_string(size) + " Withdraw: " + to_string(-1*temp_s.top()) + "\n");
         temp_s.pop();
+        size--;
     }
     foreach (QTcpSocket* socket,connections)
     {
