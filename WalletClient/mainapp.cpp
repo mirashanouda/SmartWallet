@@ -100,7 +100,7 @@ void MainApp::displayMessage(const QString& str)
 
 void MainApp::on_pushButton_clicked()
 {
-    sendToServer(QString::fromStdString("B" + to_string(show_hide)));
+    sendToServer(QString::fromStdString("B" + usr_ID.toStdString() + "," + to_string(show_hide)));
     show_hide ^= 1;
 }
 
@@ -109,7 +109,7 @@ void MainApp::on_push_deposite_clicked()
     if(ui->text_deposite->text() != "") {
         bool isNum = false;
         float value = ui->text_deposite->text().toFloat(&isNum);
-        if(isNum) sendToServer("T" + ui->text_deposite->text());
+        if(isNum) sendToServer("T" + usr_ID + "," + ui->text_deposite->text());
         else QMessageBox::critical(this, "Error!", "Please enter a valid number");
         ui->text_deposite->clear();
         ui->textEdit->clear();
@@ -122,7 +122,7 @@ void MainApp::on_push_withdraw_clicked()
     if(ui->text_withdraw->text() != "") {
         bool isNum = false;
         float value = ui->text_withdraw->text().toFloat(&isNum);
-        if(isNum) sendToServer("T-" + ui->text_withdraw->text());
+        if(isNum) sendToServer("T" + usr_ID + ",-" + ui->text_withdraw->text());
         else QMessageBox::critical(this, "Error!", "Please enter a valid number");
         ui->text_withdraw->clear();
         ui->textEdit->clear();
@@ -132,13 +132,13 @@ void MainApp::on_push_withdraw_clicked()
 
 void MainApp::on_pushButton_cancel_clicked()
 {
-    sendToServer("X");
+    sendToServer("X" + usr_ID);
     QMessageBox::information(this, "Confirmation", "The last transaction is canceled");
 }
 
 void MainApp::on_pushButton_show_trans_clicked()
 {
-    sendToServer("R");
+    sendToServer("R"+ usr_ID);
 }
 
 void MainApp::discardSocket()

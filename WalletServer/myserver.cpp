@@ -58,16 +58,23 @@ void MyServer::readFromSocket()
     QString msg = QString::fromStdString(server_msg.toStdString());
     emit newMessage(msg);
     if (msg[0] == 'I') processIncommingUserData(socket, msg.remove(0,1));
-    else if (msg[0] == 'B') sendBalance(msg.remove(0,1));
-    else if (msg[0] == 'T') {
-        float bal = stof(msg.remove(0,1).toStdString());
-        rec->set_balance(bal);
-        sendToClient(socket, QString::fromStdString("B" + rec->get_balance()));
-    }
-    else if (msg[0] == 'R') sendTransactions();
-    else if (msg[0] == 'X') {
-        rec->cancel_last_trans();
-        sendToClient(socket, QString::fromStdString("B" + rec->get_balance()));
+    else {
+        msg.remove(0,1);
+        QString id_str = "";
+        QString msg_info = "";
+        bool comma_flag = false;
+        for(auto c : msg){
+            if (c == ',') comma_flag = true;
+            else if (!comma_flag) id_str += c;
+            else if (comma_flag) msg_info += c;
+        }
+        if (msg[0] == 'B') sendBalance(id_str, msg_info);
+        else if (msg[0] == 'T') updateBalance(id_str, msg.remove(0,1));
+        else if (msg[0] == 'R') sendTransactions(id_str);
+        else if (msg[0] == 'X') {
+            rec->cancel_last_trans();
+            sendToClient(socket, QString::fromStdString("B" + rec->get_balance()));
+        }
     }
 }
 
@@ -75,7 +82,7 @@ void MyServer::readFromSocket()
 void MyServer::processIncommingUserData(QTcpSocket *socket, QString usr_str)
 {
     string usr_std_str = usr_str.toStdString();
-    int ID = UsrRecord(usr_std_str).get_id();
+    QString ID = QString::number(UsrRecord(usr_std_str).get_id());
     usr_sockets[ID].push_back(socket);
     if (records.count(ID)) emit newMessage("User already existing!");
     else {
@@ -83,7 +90,7 @@ void MyServer::processIncommingUserData(QTcpSocket *socket, QString usr_str)
         records[ID] = new UsrRecord(usr_std_str);
     }
     rec = records[ID];
-    QString info = QString::fromStdString("N" + rec->get_fname() + " " + rec->get_lname() + "," + to_string(ID));
+    QString info = QString::fromStdString("N" + rec->get_fname() + " " + rec->get_lname() + "," + ID.toStdString());
     foreach (QTcpSocket* socket, usr_sockets[ID]) //connections
     {
         sendToClient(socket, info);
@@ -112,19 +119,20 @@ void MyServer::sendToClient(QTcpSocket* socket, QString data)
         QMessageBox::critical(this,"Server","Not connected");
 }
 
-void MyServer::sendBalance(QString show_hide)
+void MyServer::sendBalance(QString ID, QString show_hide)
 {
     QString bal;
-    if(show_hide == "0") bal = QString::fromStdString("B" + rec->get_balance());
+    if(show_hide == "0")
+        bal = QString::fromStdString("B" + records[ID]->get_balance());
     else bal = "B******";
 
-    foreach (QTcpSocket* socket, connections) //connections
+    foreach (QTcpSocket* socket, usr_sockets[ID]) //connections
     {
         sendToClient(socket, bal);
     }
 }
 
-void MyServer::sendTransactions()
+void MyServer::sendTransactions(QString ID)
 {
     stack<float> temp_s = rec->get_transactions();
     int size = temp_s.size();
@@ -135,9 +143,20 @@ void MyServer::sendTransactions()
         temp_s.pop();
         size--;
     }
-    foreach (QTcpSocket* socket,connections)
+
+    foreach (QTcpSocket* socket, usr_sockets[ID]) //connections
     {
         sendToClient(socket, QString::fromStdString(trans_str));
+    }
+}
+
+void MyServer::updateBalance(QString ID, QString trans)
+{
+    float bal = stof(trans.toStdString());
+    records[ID]->set_balance(bal);
+    foreach (QTcpSocket* socket, usr_sockets[ID]) //connections
+    {
+        sendToClient(socket, QString::fromStdString("B" + records[ID]->get_balance()));
     }
 }
 
