@@ -7,7 +7,6 @@ MainApp::MainApp(QWidget *parent, QString info) :
 {
     ui->setupUi(this);
     socket = new QTcpSocket();
-    usr_ID = "";
     connect(this, &MainApp::newMessage, this, &MainApp::displayMessage);
     connect(socket, &QTcpSocket::readyRead, this, &MainApp::readFromSocket);
     connect(socket, &QTcpSocket::disconnected, this, &MainApp::discardSocket);
@@ -54,10 +53,8 @@ void MainApp::readFromSocket()
         for(auto c : msg){
             if (c == ',') comma_flag = true;
             else if (!comma_flag) name += c;
-            else if (comma_flag) usr_ID += c;
         }
         ui->label->setText("Welcome, " + name + "!");
-        QMessageBox::information(this, "ID", usr_ID);
     }
     else if(msg[0] == 'B'){
         msg.remove(0,1);
@@ -100,7 +97,7 @@ void MainApp::displayMessage(const QString& str)
 
 void MainApp::on_pushButton_clicked()
 {
-    sendToServer(QString::fromStdString("B" + usr_ID.toStdString() + "," + to_string(show_hide)));
+    sendToServer(QString::fromStdString("B" + to_string(show_hide)));
     show_hide ^= 1;
 }
 
@@ -109,7 +106,7 @@ void MainApp::on_push_deposite_clicked()
     if(ui->text_deposite->text() != "") {
         bool isNum = false;
         float value = ui->text_deposite->text().toFloat(&isNum);
-        if(isNum) sendToServer("T" + usr_ID + "," + ui->text_deposite->text());
+        if(isNum) sendToServer("T" + ui->text_deposite->text());
         else QMessageBox::critical(this, "Error!", "Please enter a valid number");
         ui->text_deposite->clear();
         ui->textEdit->clear();
@@ -122,7 +119,7 @@ void MainApp::on_push_withdraw_clicked()
     if(ui->text_withdraw->text() != "") {
         bool isNum = false;
         float value = ui->text_withdraw->text().toFloat(&isNum);
-        if(isNum) sendToServer("T" + usr_ID + ",-" + ui->text_withdraw->text());
+        if(isNum) sendToServer("T-" + ui->text_withdraw->text());
         else QMessageBox::critical(this, "Error!", "Please enter a valid number");
         ui->text_withdraw->clear();
         ui->textEdit->clear();
@@ -132,13 +129,14 @@ void MainApp::on_push_withdraw_clicked()
 
 void MainApp::on_pushButton_cancel_clicked()
 {
-    sendToServer("X" + usr_ID);
+    sendToServer("X");
+    ui->textEdit->clear();
     QMessageBox::information(this, "Confirmation", "The last transaction is canceled");
 }
 
 void MainApp::on_pushButton_show_trans_clicked()
 {
-    sendToServer("R"+ usr_ID);
+    sendToServer("R");
 }
 
 void MainApp::discardSocket()

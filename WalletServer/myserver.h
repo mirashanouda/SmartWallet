@@ -36,23 +36,20 @@ private:
     Ui::MyServer *ui;
     QTcpServer *server;
     QSet<QTcpSocket*> connections;
-    map<QString, vector<QTcpSocket*>> usr_sockets;
     map<QString, UsrRecord*> records;
     UsrRecord *rec;
 
 private slots:
     void newConnection();
     void addToSocketSet(QTcpSocket* socket);
-
     void readFromSocket();
     void discardSocket();
     void displayError(QAbstractSocket::SocketError socketError);
-
     void displayMessage(const QString& str);
     void processIncommingUserData(QTcpSocket *socket, QString usr_str);
     void sendToClient(QTcpSocket* socket,QString data);
-    void sendBalance(QString ID, QString show_hide);
-    void sendTransactions(QString ID);
-    void updateBalance(QString ID, QString trans);
+    void sendBalance(QString show_hide);
+    void updateBalance(QString trans);
+    void sendTransactions();
 };
 #endif // MYSERVER_H

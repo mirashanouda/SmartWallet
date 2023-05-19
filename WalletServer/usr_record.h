@@ -28,7 +28,7 @@ public:
     string get_balance();
     void set_balance(float bal);
     stack<float> get_transactions();
-    void cancel_last_trans();
+    float cancel_last_trans();
 };
 
 #endif // USR_RECORD_H

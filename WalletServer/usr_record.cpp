@@ -61,9 +61,10 @@ stack<float> UsrRecord::get_transactions()
     return transactions;
 }
 
-void UsrRecord::cancel_last_trans()
+float UsrRecord::cancel_last_trans()
 {
     float bal = transactions.top();
     balance -= bal;
     transactions.pop();
+    return bal;
 }
