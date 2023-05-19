@@ -71,7 +71,6 @@ void MyServer::processIncommingUserData(QTcpSocket *socket, QString usr_str)
 {
     string usr_std_str = usr_str.toStdString();
     QString ID = QString::number(UsrRecord(usr_std_str).get_id());
-    usr_sockets[ID].push_back(socket);
     if (records.count(ID)) emit newMessage("User already existing!");
     else {
         emit newMessage("New User Added!");
@@ -82,7 +81,7 @@ void MyServer::processIncommingUserData(QTcpSocket *socket, QString usr_str)
                "\nPhone:" + to_string(rec->get_phone()) +
                "\nNational ID: " + ID.toStdString()));
     QString info = QString::fromStdString("N" + rec->get_fname() + " " + rec->get_lname() + "," + ID.toStdString());
-    foreach (QTcpSocket* socket, usr_sockets[ID]) //connections
+    foreach (QTcpSocket* socket, connections) //connections
     {
         sendToClient(socket, info);
     }

@@ -16,16 +16,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-//            QString fname = ui->fn_lineEdit->text();
-//            QString lname = ui->ln_lineEdit->text();
-//            QString phone = ui->phone_lineEdit->text();
-//            QString id = ui->id_lineEdit->text();
+    QString fname = ui->fn_lineEdit->text();
+    QString lname = ui->ln_lineEdit->text();
+    QString phone = ui->phone_lineEdit->text();
+    QString id = ui->id_lineEdit->text();
 
-    QString fname = "Mira";
-    QString lname = "Medhat";
-    QString phone = "123456";
-    QString id = "789000";
-
+    if (fname.isEmpty() || lname.isEmpty() || phone.isEmpty() || id.isEmpty()){
+        QMessageBox::critical(this, "Error!", "All fields are required!");
+        return;
+    }
     QString all_info = fname + "," + lname + "," + phone + "," + id;
 
     ui->fn_lineEdit->clear();
