@@ -16,6 +16,8 @@ C++ project to create a smart wallet system composed of client and server sides 
 ![Wallet Server UML](https://github.com/mirashanouda/SmartWallet/assets/67865802/df1ba332-2235-485c-bb58-0d6de87ec0ca)
 
 ## **Specifications:**
+- The server should be always running to save the data of incomming clients. If the server is shut down, all users data are lost. 
+- Clients can disconnect and reconnect as long as the server is running. 
 - The user's National ID is the primary key in the stored database on the server.
 - Only a single server can be running at a single time.
 - Multiple clients are allowed to connect to the server but should enter the same user details.
