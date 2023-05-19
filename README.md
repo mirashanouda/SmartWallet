@@ -2,8 +2,8 @@
 C++ project to create a smart wallet system composed of client and server sides that interact with each other using TCP sockets. 
 
 ## User Guidelines (How to use it):
-1. Download the SmartWallet Server (SmartWalletServer.exe).
-2. Download the SmartWallet Client (SmartWalletClient.exe).
+1. Download the SmartWallet Server (WalletServer.exe) from exe directlry.
+2. Download the SmartWallet Client (WalletClient.exe) from exe directlry.
 3. Start the SmartWallet Server (SmartWalletServer.exe) before opening the client. 
 4. Start the SmartWallet Server (SmartWalletClient.exe). 
 5. Enter the user details on the Log In page. 
